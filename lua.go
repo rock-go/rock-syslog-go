@@ -3,6 +3,7 @@ package syslog
 import (
 	"github.com/rock-go/rock/lua"
 	"github.com/rock-go/rock/xcall"
+	"reflect"
 )
 
 const (
@@ -10,31 +11,20 @@ const (
 	RFC5424
 	RFC6587
 	Automatic
+)
 
+var (
+	SYSLOGS = reflect.TypeOf((*server)(nil)).String()
 )
 
 func newLuaSyslogS(L *lua.LState) int {
 	cfg := newConfig(L)
-	if e := cfg.verify(); e != nil {
-		L.RaiseError("%v" , e)
-		return 0
-	}
-
-	var obj *server
-	var ok bool
-
-	proc := L.NewProc(cfg.name)
-	if proc.Value == nil {
-		proc.Value = newSyslogS(cfg)
+	proc := L.NewProc(cfg.name , SYSLOGS)
+	if proc.IsNil() {
+		proc.Set(newSyslogS(cfg))
 		goto done
 	}
-
-	obj , ok = proc.Value.(*server)
-	if !ok {
-		L.RaiseError("want to reset not syslog")
-		return 0
-	}
-	obj.cfg = cfg
+	proc.Value.(*server).cfg = cfg
 
 done:
 	L.Push(proc)

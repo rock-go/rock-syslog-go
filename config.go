@@ -47,6 +47,11 @@ func newConfig(L *lua.LState) *config {
 		}
 	})
 
+	if e := cfg.verify(); e != nil {
+		L.RaiseError("%v" , e)
+		return nil
+	}
+
 	return cfg
 }
 
