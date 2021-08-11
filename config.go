@@ -15,8 +15,6 @@ type config struct {
 	output   []lua.Writer
 }
 
-
-
 func newConfig(L *lua.LState) *config {
 	tab := L.CheckTable(1)
 	cfg := &config{format: Automatic}
@@ -33,13 +31,13 @@ func newConfig(L *lua.LState) *config {
 			cfg.listen = val.String()
 
 		case "format":
-			cfg.format = lua.CheckInt(L , val)
+			cfg.format = lua.CheckInt(L, val)
 
 		case "encode":
 			cfg.encode = val.String()
 
 		case "output":
-			cfg.output = checkOutputSDK(L , val)
+			cfg.output = checkOutputSDK(L, val)
 
 		default:
 			L.RaiseError("invalid syslog config field")
@@ -48,7 +46,7 @@ func newConfig(L *lua.LState) *config {
 	})
 
 	if e := cfg.verify(); e != nil {
-		L.RaiseError("%v" , e)
+		L.RaiseError("%v", e)
 		return nil
 	}
 
@@ -56,34 +54,31 @@ func newConfig(L *lua.LState) *config {
 }
 
 func (cfg *config) verify() error {
-	if e := utils.Name(cfg.name);e != nil {
+	if e := utils.Name(cfg.name); e != nil {
 		return e
 	}
 
-
 	switch cfg.protocol {
-	case "tcp","udp", "tcp/udp":
+	case "tcp", "udp", "tcp/udp":
 		//ok
 	default:
 		return errors.New("invalid network protocol")
 	}
 
 	switch cfg.format {
-	case RFC3164 , RFC5424 , RFC6587 , Automatic:
+	case RFC3164, RFC5424, RFC6587, Automatic:
 		//ok
 	default:
 		return errors.New("invalid syslog format")
 	}
 
 	switch cfg.encode {
-	case "json","raw":
+	case "json", "raw":
 		//ok
 
 	default:
 		return errors.New("invalid syslog encode")
 	}
-
-
 
 	return nil
 }

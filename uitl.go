@@ -4,10 +4,10 @@ import (
 	"github.com/rock-go/rock/lua"
 )
 
-func checkOutputSDK( L *lua.LState , v lua.LValue ) []lua.Writer {
-	sdk := make([]lua.Writer , 0)
+func checkOutputSDK(L *lua.LState, v lua.LValue) []lua.Writer {
+	sdk := make([]lua.Writer, 0)
 	if v.Type() != lua.LTTable {
-		L.RaiseError("invalid writer , must be table , got %s" , v.Type().String())
+		L.RaiseError("invalid writer , must be table , got %s", v.Type().String())
 		return nil
 	}
 

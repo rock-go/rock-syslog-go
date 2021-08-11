@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"time"
-	"github.com/rock-go/rock/lua"
-	"gopkg.in/mcuadros/go-syslog.v2"
-	"github.com/rock-go/rock/utils"
 	"github.com/rock-go/rock/logger"
+	"github.com/rock-go/rock/lua"
+	"github.com/rock-go/rock/utils"
+	"gopkg.in/mcuadros/go-syslog.v2"
+	"time"
 )
 
 type server struct {
@@ -18,11 +18,11 @@ type server struct {
 	state  lua.LightUserDataStatus
 
 	cfg  *config
-	serv  *syslog.Server
+	serv *syslog.Server
 }
 
 func newSyslogS(cfg *config) *server {
-	return &server{cfg:cfg , state:lua.INIT}
+	return &server{cfg: cfg, state: lua.INIT}
 }
 
 func (s *server) Name() string {
@@ -74,17 +74,17 @@ func (s *server) Start() error {
 	}
 
 	serv.Boot()
-	go func(channel syslog.LogPartsChannel){
+	go func(channel syslog.LogPartsChannel) {
 		for item := range channel {
 			switch s.cfg.encode {
 			case "json":
-				if v, e := json.Marshal( item ); e == nil {
-					s.Push( v )
+				if v, e := json.Marshal(item); e == nil {
+					s.Push(v)
 				} else {
-					logger.Errorf("syslog-go err: %v" , e)
+					logger.Errorf("syslog-go err: %v", e)
 				}
 			case "line":
-				s.Push( fmt.Sprintf("%v" , item ))
+				s.Push(fmt.Sprintf("%v", item))
 			}
 		}
 	}(channel)
@@ -95,19 +95,19 @@ func (s *server) Start() error {
 	return nil
 }
 
-func (s *server) Push( v interface{} ) {
+func (s *server) Push(v interface{}) {
 	n := len(s.cfg.output)
-	for i := 0; i< n ;i++ {
+	for i := 0; i < n; i++ {
 		w := s.cfg.output[i]
-		_ , err := utils.Push(w , v)
+		_, err := utils.Push(w, v)
 		if err != nil {
-			logger.Errorf("%s Push io fail , err: %v" , s.Name() , err)
+			logger.Errorf("%s Push io fail , err: %v", s.Name(), err)
 			continue
 		}
 	}
 }
 
 func (s *server) Close() error {
-	logger.Errorf("%s stop succeed" , s.Name())
+	logger.Errorf("%s stop succeed", s.Name())
 	return s.serv.Kill()
 }
