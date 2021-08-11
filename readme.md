@@ -15,7 +15,7 @@ syslog 模块
         format    = syslog.Auto ,
         
         -- json , raw  数据保存格式
-        format    = "raw", 
+        encode    = "raw", 
         
         output = {kafka , file } -- lua.Writer 接口的方法 
     }

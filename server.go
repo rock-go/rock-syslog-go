@@ -83,7 +83,7 @@ func (s *server) Start() error {
 				} else {
 					logger.Errorf("syslog-go err: %v", e)
 				}
-			case "line":
+			case "raw":
 				s.Push(fmt.Sprintf("%v", item))
 			}
 		}
