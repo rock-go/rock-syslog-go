@@ -2,8 +2,8 @@ package syslog
 
 import (
 	"errors"
+	"github.com/rock-go/rock/auxlib"
 	"github.com/rock-go/rock/lua"
-	"github.com/rock-go/rock/utils"
 )
 
 type config struct {
@@ -54,7 +54,7 @@ func newConfig(L *lua.LState) *config {
 }
 
 func (cfg *config) verify() error {
-	if e := utils.Name(cfg.name); e != nil {
+	if e := auxlib.Name(cfg.name); e != nil {
 		return e
 	}
 

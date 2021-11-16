@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/rock-go/rock/auxlib"
 	"github.com/rock-go/rock/logger"
 	"github.com/rock-go/rock/lua"
-	"github.com/rock-go/rock/utils"
 	"gopkg.in/mcuadros/go-syslog.v2"
 	"time"
 )
@@ -90,7 +90,7 @@ func (s *server) Start() error {
 	}(channel)
 
 	s.serv = serv
-	s.state = lua.RUNNING
+	s.state = lua.RUN
 	s.uptime = time.Now()
 	return nil
 }
@@ -99,7 +99,7 @@ func (s *server) Push(v interface{}) {
 	n := len(s.cfg.output)
 	for i := 0; i < n; i++ {
 		w := s.cfg.output[i]
-		_, err := utils.Push(w, v)
+		_, err := auxlib.Push(w, v)
 		if err != nil {
 			logger.Errorf("%s Push io fail , err: %v", s.Name(), err)
 			continue
